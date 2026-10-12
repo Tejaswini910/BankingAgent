@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173e35">
+  <title>Personal Loan | Smart Banking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182b25;
+      --muted: #69766f;
+      --line: #dce5de;
+      --paper: #fff;
+      --canvas: #f1f5f1;
+      --green: #174a3e;
+      --green-dark: #12372f;
+      --lime: #d8f078;
+      --soft-green: #e9f3e9;
+      --amber: #995014;
+      --soft-amber: #fff3e4;
+      --shadow: 0 20px 55px rgba(31, 55, 44, .09);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 8% 10%, rgba(216,240,120,.17), transparent 31rem), linear-gradient(135deg,#f4f7f2,#eef3ef 55%,#f8f8f3);
+      color: var(--ink);
+      font-family: "DM Sans", "Avenir Next", sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { height: 68px; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(18px,5vw,72px); background:var(--green-dark); color:white; }
+    .brand { display:flex; align-items:center; gap:11px; }
+    .brand-mark { width:36px; height:36px; display:grid; place-items:center; border-radius:10px; background:var(--lime); color:var(--green-dark); font:800 13px "Manrope",sans-serif; }
+    .brand-name { font:700 14px "Manrope",sans-serif; }
+    .brand-sub { margin-top:2px; color:#bdd0c7; font-size:10px; }
+    .top-meta { display:flex; align-items:center; gap:8px; color:#deebe4; font-size:11px; }
+    .online { width:7px; height:7px; border-radius:50%; background:var(--lime); }
+    main { width:min(1080px,calc(100% - 36px)); margin:37px auto 64px; }
+    .heading { display:flex; justify-content:space-between; align-items:end; margin-bottom:22px; }
+    .eyebrow { color:#527267; font-size:11px; font-weight:700; text-transform:uppercase; }
+    h1 { margin:7px 0 0; font:700 29px "Manrope",sans-serif; letter-spacing:0; }
+    .intro { margin:7px 0 0; color:var(--muted); font-size:13px; }
+    .demo-label { color:#708078; font-size:11px; }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-bottom:18px; border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,.72); overflow:hidden; }
+    .step { display:flex; align-items:center; gap:10px; min-height:54px; padding:10px 17px; color:#78857e; font-size:12px; }
+    .step + .step { border-left:1px solid var(--line); }
+    .step-num { width:23px; height:23px; display:grid; place-items:center; flex:0 0 23px; border:1px solid #cbd7ce; border-radius:50%; font-size:10px; font-weight:700; }
+    .step.active { color:var(--green); font-weight:700; background:#f7faf5; }
+    .step.active .step-num, .step.done .step-num { border-color:var(--green); background:var(--green); color:white; }
+    .columns { display:grid; grid-template-columns:minmax(0,1fr) 310px; gap:20px; align-items:start; }
+    .panel { border:1px solid var(--line); border-radius:9px; background:var(--paper); box-shadow:var(--shadow); }
+    .form-panel { padding:23px 25px 22px; }
+    .panel-head { display:flex; align-items:start; justify-content:space-between; gap:15px; margin-bottom:21px; }
+    h2 { margin:0; font:700 16px "Manrope",sans-serif; }
+    .panel-copy { margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.5; }
+    .rate-note { flex:0 0 auto; padding:7px 9px; border-radius:5px; background:var(--soft-green); color:#35614f; font-size:10px; font-weight:600; }
+    .fields { display:grid; grid-template-columns:1fr 1fr; gap:16px 15px; }
+    .field { min-width:0; }
+    .field.wide { grid-column:1 / -1; }
+    label { display:block; margin-bottom:7px; color:#30423a; font-size:11px; font-weight:700; }
+    .input-wrap { position:relative; }
+    input, select { width:100%; height:43px; padding:0 12px; border:1px solid #cfdad2; border-radius:6px; outline:0; background:#fff; color:var(--ink); font-size:13px; }
+    input:focus, select:focus { border-color:#578574; box-shadow:0 0 0 3px rgba(65,117,94,.11); }
+    input::placeholder { color:#9aa49e; }
+    .prefix { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#75847b; font-size:13px; pointer-events:none; }
+    input.with-prefix { padding-left:30px; }
+    .field-help { margin-top:6px; color:#89958e; font-size:10px; line-height:1.4; }
+    .form-divider { grid-column:1 / -1; margin:1px 0 -1px; border:0; border-top:1px solid #e6ece7; }
+    .primary { min-height:43px; border:0; border-radius:6px; padding:0 17px; background:var(--green); color:white; font-size:12px; font-weight:700; transition:background .15s,transform .15s; }
+    .primary:hover { background:#226250; transform:translateY(-1px); }
+    .primary:disabled { cursor:wait; opacity:.62; transform:none; }
+    .form-footer { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:20px; }
+    .no-submit-note { max-width:275px; color:#77847c; font-size:10px; line-height:1.5; }
+    .side-panel { padding:20px; }
+    .side-panel h2 { margin-bottom:5px; }
+    .side-intro { margin:0 0 16px; color:var(--muted); font-size:11px; line-height:1.5; }
+    .summary-row { display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid #e5ebe6; font-size:11px; }
+    .summary-label { color:var(--muted); }
+    .summary-value { text-align:right; font-weight:700; overflow-wrap:anywhere; }
+    .status { display:inline-flex; align-items:center; min-height:25px; padding:4px 9px; border-radius:20px; background:#eef1ee; color:#69766f; font-size:10px; font-weight:700; }
+    .status.good { background:#e5f2e0; color:#326243; }
+    .status.bad { background:var(--soft-amber); color:var(--amber); }
+    .privacy { margin-top:17px; padding:12px; border-left:3px solid #91b080; background:#f6f8f3; color:#5e6d63; font-size:10px; line-height:1.55; }
+    .privacy strong { color:var(--ink); }
+    .result { display:none; margin-top:18px; padding:20px 23px; animation:arrive .25s ease-out both; }
+    .result.visible { display:block; }
+    .result-top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:15px; }
+    .result-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .metric { padding:13px 14px; border:1px solid #e3eae4; border-radius:6px; background:#fbfcfa; }
+    .metric-label { color:var(--muted); font-size:10px; }
+    .metric-value { margin-top:6px; font:700 18px "Manrope",sans-serif; overflow-wrap:anywhere; }
+    .metric-foot { margin-top:4px; color:#819087; font-size:10px; }
+    .result-detail { margin-top:14px; padding:12px 14px; border-radius:6px; background:#f4f7f3; color:#53645a; font-size:11px; line-height:1.55; white-space:pre-wrap; }
+    .confirmation { display:none; margin-top:17px; padding-top:16px; border-top:1px solid var(--line); }
+    .confirmation.visible { display:block; }
+    .confirm-copy { margin:0 0 12px; font-size:12px; font-weight:700; }
+    .confirm-actions { display:flex; flex-wrap:wrap; gap:9px; }
+    .secondary { min-height:42px; border:1px solid #9aafa2; border-radius:6px; padding:0 15px; background:white; color:var(--green); font-size:12px; font-weight:700; }
+    .secondary:hover { background:#f3f7f3; }
+    .alert { display:none; margin:0 0 15px; padding:11px 13px; border:1px solid #efd2b0; border-radius:6px; background:var(--soft-amber); color:#774216; font-size:11px; line-height:1.5; }
+    .alert.visible { display:block; }
+    .success { display:none; margin-top:14px; padding:11px 13px; border-radius:6px; background:var(--soft-green); color:#28583e; font-size:11px; line-height:1.5; }
+    .success.visible { display:block; }
+    @keyframes arrive { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    @media (max-width:800px) {
+      main { margin-top:26px; }
+      .columns { grid-template-columns:minmax(0,1fr) 260px; gap:14px; }
+      .form-panel { padding:19px; }
+      .side-panel { padding:17px; }
+      .result-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:650px) {
+      .topbar { height:60px; padding:0 15px; }
+      .top-meta { font-size:0; gap:0; }
+      main { width:calc(100% - 24px); margin:21px auto 36px; }
+      .heading { margin-bottom:16px; }
+      h1 { font-size:24px; }
+      .intro { max-width:310px; font-size:12px; }
+      .demo-label { display:none; }
+      .steps { margin-bottom:13px; }
+      .step { justify-content:center; gap:7px; min-height:48px; padding:8px 5px; font-size:10px; }
+      .step-num { width:20px; height:20px; flex-basis:20px; }
+      .columns { grid-template-columns:1fr; }
+      .side-panel { order:-1; }
+      .side-intro { margin-bottom:9px; }
+      .summary-row { display:none; }
+      .summary-row:first-of-type { display:flex; padding-bottom:2px; border-top:0; }
+      .privacy { display:none; }
+      .form-panel { padding:17px 15px; }
+      .panel-head { margin-bottom:16px; }
+      .fields { gap:13px 10px; }
+      .rate-note { max-width:104px; white-space:normal; line-height:1.35; }
+      .form-footer { align-items:stretch; flex-direction:column-reverse; }
+      .primary { width:100%; }
+      .no-submit-note { max-width:none; }
+      .result { padding:17px 14px; }
+      .result-grid { gap:8px; }
+      .metric { padding:11px; }
+      .metric-value { font-size:16px; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="Smart Banking">
+      <div class="brand-mark" aria-hidden="true">SB</div>
+      <div><div class="brand-name">Smart Banking</div><div class="brand-sub">Lending services</div></div>
+    </div>
+    <div class="top-meta"><span class="online" aria-hidden="true"></span>Secure demo application</div>
+  </header>
+  <main>
+    <section class="heading" aria-labelledby="pageTitle">
+      <div><div class="eyebrow">Personal lending</div><h1 id="pageTitle">Check your loan eligibility</h1><p class="intro">Enter your details to review the estimated EMI and eligibility before deciding whether to apply.</p></div>
+      <div class="demo-label">Mock banking service</div>
+    </section>
+
+    <nav class="steps" aria-label="Application progress">
+      <div class="step active" id="stepDetails"><span class="step-num">1</span><span>Your details</span></div>
+      <div class="step" id="stepReview"><span class="step-num">2</span><span>Review estimate</span></div>
+      <div class="step" id="stepConfirm"><span class="step-num">3</span><span>Confirm application</span></div>
+    </nav>
+
+    <div class="columns">
+      <section class="panel form-panel" aria-labelledby="formTitle">
+        <div class="panel-head">
+          <div><h2 id="formTitle">Loan request</h2><p class="panel-copy">Your salary and KYC status are checked against your bank profile.</p></div>
+          <div class="rate-note" id="rateNote">Bank rate applies</div>
+        </div>
+        <div class="alert" id="errorAlert" role="alert"></div>
+        <form id="loanForm">
+          <div class="fields">
+            <div class="field wide">
+              <label for="customerId">Customer ID</label>
+              <input id="customerId" name="customer_id" type="number" min="1" step="1" placeholder="Enter your customer ID" autocomplete="off" required>
+              <div class="field-help">Used only to retrieve your mock account profile.</div>
+            </div>
+            <hr class="form-divider">
+            <div class="field">
+              <label for="loanAmount">Loan amount</label>
+              <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input class="with-prefix" id="loanAmount" name="loan_amount" type="number" min="1" max="50000000" step="1000" value="500000" required></div>
+            </div>
+            <div class="field">
+              <label for="tenure">Loan tenure</label>
+              <select id="tenure" name="tenure_years" required><option value="1">1 year</option><option value="2">2 years</option><option value="3" selected>3 years</option><option value="4">4 years</option><option value="5">5 years</option><option value="7">7 years</option></select>
+            </div>
+            <div class="field wide">
+              <label for="existingEmi">Existing monthly loan EMI</label>
+              <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input class="with-prefix" id="existingEmi" name="existing_emi" type="number" min="0" max="10000000" step="100" value="5000" required></div>
+              <div class="field-help">Include the total EMI you currently pay for other loans.</div>
+            </div>
+          </div>
+          <div class="form-footer">
+            <div class="no-submit-note">Checking eligibility does not submit an application. We’ll ask for your confirmation before any submission.</div>
+            <button class="primary" id="checkButton" type="submit">Check eligibility</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="panel side-panel" aria-labelledby="summaryTitle">
+        <h2 id="summaryTitle">Application overview</h2>
+        <p class="side-intro">Your request status will appear here as each check completes.</p>
+        <div class="summary-row"><span class="summary-label">Account</span><span class="summary-value" id="accountStatus"><span class="status">Not checked</span></span></div>
+        <div class="summary-row"><span class="summary-label">Salary</span><span class="summary-value" id="salaryValue">—</span></div>
+        <div class="summary-row"><span class="summary-label">KYC</span><span class="summary-value" id="kycValue"><span class="status">Not checked</span></span></div>
+        <div class="summary-row"><span class="summary-label">Eligibility</span><span class="summary-value" id="eligibilityValue"><span class="status">Not checked</span></span></div>
+        <div class="summary-row"><span class="summary-label">Application</span><span class="summary-value" id="applicationStatus"><span class="status">Not submitted</span></span></div>
+        <div class="privacy"><strong>Demo banking profile.</strong> Account lookup and eligibility use mock records. Avoid entering real passwords, PINs, or account credentials.</div>
+      </aside>
+    </div>
+
+    <section class="panel result" id="resultPanel" aria-labelledby="resultTitle" aria-live="polite">
+      <div class="result-top"><div><h2 id="resultTitle">Your loan estimate</h2><p class="panel-copy" id="resultSubtitle">Based on the information you provided.</p></div><span class="status" id="eligibilityBadge">Awaiting review</span></div>
+      <div class="result-grid">
+        <div class="metric"><div class="metric-label">Requested amount</div><div class="metric-value" id="resultAmount">—</div><div class="metric-foot" id="resultTenure">—</div></div>
+        <div class="metric"><div class="metric-label">Estimated monthly EMI</div><div class="metric-value" id="resultEmi">—</div><div class="metric-foot" id="resultRate">Bank rate</div></div>
+        <div class="metric"><div class="metric-label">Total EMI burden</div><div class="metric-value" id="resultBurden">—</div><div class="metric-foot" id="resultLimit">50% of salary limit</div></div>
+      </div>
+      <div class="result-detail" id="resultMessage"></div>
+      <div class="success" id="successMessage"></div>
+      <div class="confirmation" id="confirmationPanel">
+        <p class="confirm-copy">You are eligible for the loan. Would you like me to submit the loan application?</p>
+        <div class="confirm-actions"><button class="primary" id="confirmSubmit" type="button">Yes, submit application</button><button class="secondary" id="declineSubmit" type="button">No, not now</button></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("loanForm");
+    const checkButton = document.getElementById("checkButton");
+    const errorAlert = document.getElementById("errorAlert");
+    const resultPanel = document.getElementById("resultPanel");
+    const confirmationPanel = document.getElementById("confirmationPanel");
+    const successMessage = document.getElementById("successMessage");
+    const money = (value) => value == null ? "—" : `₹${Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`;
+    let sessionId = crypto.randomUUID();
+    let busy = false;
+
+    function badge(text, state = "") {
+      const node = document.createElement("span");
+      node.className = `status ${state}`.trim();
+      node.textContent = text;
+      return node;
+    }
+    function setBadge(elementId, text, state = "") {
+      const target = document.getElementById(elementId);
+      target.replaceChildren(badge(text, state));
+    }
+    function setStep(active) {
+      ["stepDetails", "stepReview", "stepConfirm"].forEach((id, index) => {
+        const step = document.getElementById(id);
+        step.classList.toggle("active", index + 1 === active);
+        step.classList.toggle("done", index + 1 < active);
+      });
+    }
+    function showError(text) {
+      errorAlert.textContent = text;
+      errorAlert.classList.add("visible");
+    }
+    function renderResult(data, request) {
+      const facts = data.facts || {};
+      resultPanel.classList.add("visible");
+      document.getElementById("resultAmount").textContent = money(facts.loan_amount ?? request.loan_amount);
+      document.getElementById("resultTenure").textContent = `${facts.tenure_years ?? request.tenure_years} years`;
+      document.getElementById("resultEmi").textContent = money(facts.monthly_emi);
+      document.getElementById("resultRate").textContent = facts.interest_rate == null ? "Annual rate from bank configuration" : `${facts.interest_rate}% annual rate`;
+      document.getElementById("resultBurden").textContent = money(facts.total_emi_burden);
+      document.getElementById("resultLimit").textContent = facts.maximum_allowed_burden == null ? "50% of verified salary" : `Limit: ${money(facts.maximum_allowed_burden)}`;
+      document.getElementById("resultMessage").textContent = data.reply || "Your request has been reviewed.";
+      document.getElementById("resultTitle").textContent = facts.application_id ? "Application submitted" : "Your loan estimate";
+      if (facts.eligible === true) {
+        const eligibilityBadge = document.getElementById("eligibilityBadge");
+        eligibilityBadge.className = "status good";
+        eligibilityBadge.textContent = "Eligible";
+        setBadge("eligibilityValue", "Eligible", "good");
+      } else if (facts.eligible === false) {
+        const eligibilityBadge = document.getElementById("eligibilityBadge");
+        eligibilityBadge.className = "status bad";
+        eligibilityBadge.textContent = "Not eligible";
+        setBadge("eligibilityValue", "Not eligible", "bad");
+      }
+      if (facts.account_verified === true) {
+        setBadge("accountStatus", facts.customer_name || "Account verified", "good");
+        setBadge("kycValue", "Verified", "good");
+      } else if (facts.account_verified === false) {
+        setBadge("accountStatus", "Account found", "");
+        setBadge("kycValue", "Needs attention", "bad");
+      }
+      document.getElementById("salaryValue").textContent = money(facts.salary);
+      confirmationPanel.classList.toggle("visible", Boolean(data.awaiting_confirmation));
+      if (facts.application_id) {
+        successMessage.textContent = `Application ${facts.application_id} has been submitted.`;
+        successMessage.classList.add("visible");
+        document.getElementById("resultSubtitle").textContent = "Your application has been recorded.";
+        setBadge("applicationStatus", "Submitted", "good");
+        setStep(4);
+      } else if (data.awaiting_confirmation) {
+        document.getElementById("resultSubtitle").textContent = "Review the estimate and choose whether to submit.";
+        setStep(3);
+      } else if (facts.eligible === false || facts.account_verified === false) {
+        document.getElementById("resultSubtitle").textContent = "The review is complete. No application was submitted.";
+        setBadge("applicationStatus", "Not submitted", "");
+        setStep(2);
+      } else {
+        setStep(2);
+      }
+      resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    async function workflow(decision, request) {
+      if (busy) return;
+      busy = true;
+      errorAlert.classList.remove("visible");
+      successMessage.classList.remove("visible");
+      confirmationPanel.classList.remove("visible");
+      checkButton.disabled = true;
+      checkButton.textContent = decision === "assess" ? "Checking your request…" : "Processing…";
+      try {
+        const response = await fetch("/loan/workflow", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_id: sessionId, decision, ...request })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "We couldn’t complete that step. Please try again.");
+        renderResult(data, request);
+      } catch (error) {
+        showError(error.message || "Unable to connect. Please check your connection and try again.");
+      } finally {
+        busy = false;
+        checkButton.disabled = false;
+        checkButton.textContent = "Check eligibility";
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const request = {
+        customer_id: Number(document.getElementById("customerId").value),
+        loan_amount: Number(document.getElementById("loanAmount").value),
+        tenure_years: Number(document.getElementById("tenure").value),
+        existing_emi: Number(document.getElementById("existingEmi").value)
+      };
+      if (!Number.isInteger(request.customer_id) || request.customer_id < 1) return showError("Enter a valid customer ID to look up your bank profile.");
+      if (!Number.isFinite(request.loan_amount) || request.loan_amount <= 0) return showError("Enter a loan amount greater than zero.");
+      if (!Number.isFinite(request.existing_emi) || request.existing_emi < 0) return showError("Enter a valid existing monthly EMI, or 0 if you have none.");
+      sessionId = crypto.randomUUID();
+      document.getElementById("resultPanel").classList.remove("visible");
+      successMessage.classList.remove("visible");
+      setStep(1);
+      workflow("assess", request);
+    });
+    document.getElementById("confirmSubmit").addEventListener("click", () => workflow("yes", currentRequest()));
+    document.getElementById("declineSubmit").addEventListener("click", () => workflow("no", currentRequest()));
+    function currentRequest() {
+      return {
+        customer_id: Number(document.getElementById("customerId").value),
+        loan_amount: Number(document.getElementById("loanAmount").value),
+        tenure_years: Number(document.getElementById("tenure").value),
+        existing_emi: Number(document.getElementById("existingEmi").value)
+      };
+    }
+  </script>
+</body>
+</html>
