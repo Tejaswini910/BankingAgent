@@ -2,6 +2,35 @@
 
 A runnable single-agent banking support demo built with Python, LangChain, FastAPI, SQLite, and an OpenAI-compatible Ollama endpoint. It looks up mock customer data, calculates a loan EMI, checks repayment eligibility, and only submits an application after explicit customer confirmation.
 
+## Deploy with Streamlit Community Cloud
+
+In Streamlit Community Cloud, select `banking-agent/streamlit_app.py` as the **Main file path** when the repository root is this workspace. If `banking-agent/` is itself the repository root, select `streamlit_app.py` instead. The project dependencies are in `banking-agent/requirements.txt`; commit and push the app, requirements, and `.streamlit/config.toml` before deploying. Streamlit Cloud starts the app and manages its port and public URL; do not use the Codespaces port URL or an Uvicorn command for this Streamlit app.
+
+The Streamlit app has Overview, My applications, and Help & support pages. On Overview, **Check my eligibility** uses the local SQLite demo account and eligibility rules; an eligible customer with verified KYC can submit using the explicit-consent checkbox and button. The Help & support chat uses the LangChain agent and requires a reachable model provider. Use seeded demo customer ID `1`.
+
+For Streamlit Community Cloud, open **App settings → Secrets** and add your reachable OpenAI-compatible model provider settings (replace the example values):
+
+```toml
+OLLAMA_BASE_URL = "https://your-provider.example/v1"
+OLLAMA_MODEL = "your-tool-capable-model"
+OLLAMA_API_KEY = "your-provider-api-key"
+DEFAULT_INTEREST_RATE = "10.5"
+```
+
+Do not commit the API key. The local `.env` defaults point at local Ollama; `localhost` on Streamlit Cloud means the app's own server, not your computer. Choose a model/provider that supports tool calling. Chat messages are sent to that configured model provider, so use only this app's fictional demo customer data. Streamlit may reset the current conversation on refresh.
+
+SQLite application records are local to the app instance and may not survive app restarts or redeployments.
+
+### Run in GitHub Codespaces
+
+From the workspace root, start the app with:
+
+```bash
+streamlit run banking-agent/streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+```
+
+Open forwarded port `8501` in the **Ports** panel. A `502` from a `*.app.github.dev` URL means Codespaces cannot reach an app listening on that forwarded port; it is not the public Streamlit Cloud deployment URL. The Codespaces app must still be running, and may need to be restarted after a codespace stops or sleeps.
+
 ## Customer Application
 
 - One LangChain tool-calling agent with four `@tool` functions.

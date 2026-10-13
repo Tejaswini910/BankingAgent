@@ -22,6 +22,7 @@ from tools.emi_tool import calculate_emi
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SYSTEM_PROMPT = """You are the single Smart Banking Support Agent. Work only with the supplied tools and their results; never invent account facts, eligibility, or application IDs.
+This is an educational demo using fictional SQLite records, not a bank or a real loan offer. Never ask for passwords, full bank/card numbers, government identifiers, or other sensitive real customer data. Do not imply that a sample application was sent to a real lender.
 
 Workflow:
 1. Ask one concise follow-up question for required missing information. Never guess a customer ID. Required information includes customer ID, loan amount, tenure in years, and existing monthly EMI.
@@ -47,12 +48,22 @@ Application ID: <ID or N/A>
 class BankingAssistant:
     """Manage chat history and enforce explicit consent around one agent."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        model: str | None = None,
+        base_url: str | None = None,
+        api_key: str | None = None,
+        default_rate: float | None = None,
+    ) -> None:
         load_dotenv(PROJECT_ROOT / ".env")
-        default_rate = os.getenv("DEFAULT_INTEREST_RATE", "10.5")
-        model = os.getenv("OLLAMA_MODEL", "llama3.2")
-        base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
-        api_key = os.getenv("OLLAMA_API_KEY", "ollama")
+        configured_rate = (
+            default_rate
+            if default_rate is not None
+            else float(os.getenv("DEFAULT_INTEREST_RATE", "10.5"))
+        )
+        model = model or os.getenv("OLLAMA_MODEL", "llama3.2")
+        base_url = base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+        api_key = api_key or os.getenv("OLLAMA_API_KEY", "ollama")
 
         llm = ChatOpenAI(
             model=model,
@@ -68,7 +79,7 @@ class BankingAssistant:
         ]
         prompt = ChatPromptTemplate.from_messages(
             [
-                ("system", SYSTEM_PROMPT.format(default_rate=default_rate)),
+                ("system", SYSTEM_PROMPT.format(default_rate=configured_rate)),
                 MessagesPlaceholder(variable_name="chat_history"),
                 ("human", "{input}"),
                 MessagesPlaceholder(variable_name="agent_scratchpad"),
@@ -173,13 +184,19 @@ class BankingAssistant:
             self.awaiting_confirmation = False
             return self._summary("Submitted", self.application_id)
 
-        if re.search(r"would you like me to submit the loan application\?", response, re.I):
-            self.awaiting_confirmation = self.eligible is True and self.account_verified is True
-            if not self.awaiting_confirmation:
-                return (
-                    "I can’t request application confirmation until eligibility and verified KYC "
-                    "have both been established. Please provide any missing details."
-                )
+        self.awaiting_confirmation = (
+            self.eligible is True
+            and self.account_verified is True
+            and self.application_id is None
+        )
+        if self.awaiting_confirmation and not re.search(
+            r"would you like me to submit the loan application\?", response, re.I
+        ):
+            response = (
+                f"{response.rstrip()}\n\n"
+                "You are eligible for the loan. Would you like me to submit "
+                "the loan application? (yes/no)"
+            )
 
         if self.eligible is False or self.account_verified is False:
             self.awaiting_confirmation = False
